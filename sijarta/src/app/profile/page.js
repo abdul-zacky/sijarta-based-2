@@ -25,12 +25,17 @@ export default function Profile() {
         <form onSubmit={handleUpdate}>
           <p>Role: {user.role}</p>
           <p>Name: {user.name}</p>
+          <p>No HP: </p>
           <input type="text" placeholder="No HP" defaultValue={user.phone} required />
+          <p>Alamat: </p>
           <input type="text" placeholder="Alamat" defaultValue={user.address} />
           {user.role === 'Pekerja' && (
             <>
+              <p>Nama Bank: </p>
               <input type="text" placeholder="Nama Bank" defaultValue={user.bankName} />
+              <p>No Rekening: </p>
               <input type="text" placeholder="No Rekening" defaultValue={user.accountNumber} />
+              <p>NPWP: </p>
               <input type="text" placeholder="NPWP" defaultValue={user.npwp} />
             </>
           )}
