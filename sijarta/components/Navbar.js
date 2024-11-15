@@ -2,12 +2,14 @@
 "use client";
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 const Navbar = () => {
   // State to hold the user role; this could come from an auth context or global state
   const [role, setRole] = useState('Guest'); // Possible roles: 'Guest', 'Pengguna', 'Pekerja'
   const [name, setName] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     // Simulate fetching the logged-in user's data
@@ -19,6 +21,7 @@ const Navbar = () => {
   const handleLogout = () => {
     // Clear user session (example)
     localStorage.removeItem('user');
+    router.push('/');
     setRole('Guest');
     setName('');
   };
@@ -39,7 +42,7 @@ const Navbar = () => {
           {role === 'Pengguna' && (
             <>
               <span className="text-gray-300">{`Role: ${role} | ${name}`}</span>
-              <Link href="/" className="text-gray-300 hover:text-white">Homepage</Link>
+              <Link href="/landing_page" className="text-gray-300 hover:text-white">Homepage</Link>
               <Link href="/mypay" className="text-gray-300 hover:text-white">MyPay</Link>
               <Link href="/orders" className="text-gray-300 hover:text-white">Kelola Pesanan Saya</Link>
               <Link href="/discounts" className="text-gray-300 hover:text-white">Diskon</Link>
@@ -50,7 +53,7 @@ const Navbar = () => {
           {role === 'Pekerja' && (
             <>
               <span className="text-gray-300">{`Role: ${role} | ${name}`}</span>
-              <Link href="/" className="text-gray-300 hover:text-white">Homepage</Link>
+              <Link href="/landing_page" className="text-gray-300 hover:text-white">Homepage</Link>
               <Link href="/work-management" className="text-gray-300 hover:text-white">Kelola Pekerjaan Saya</Link>
               <Link href="/work-status" className="text-gray-300 hover:text-white">Kelola Status Pekerjaan</Link>
               <Link href="/mypay" className="text-gray-300 hover:text-white">MyPay</Link>
