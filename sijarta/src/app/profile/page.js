@@ -65,13 +65,19 @@ export default function Profile() {
           {user.role === 'Pekerja' && (
             <>
               <p>Nama Bank:</p>
-              <input
-                type="text"
-                placeholder="Nama Bank"
+              <select
                 value={profile.bankName}
                 onChange={handleChange('bankName')}
                 className="border p-2 w-full rounded"
-              />
+                required
+              >
+                <option value="">Nama Bank</option>
+                <option value="GoPay">GoPay</option>
+                <option value="OVO">OVO</option>
+                <option value="Virtual Account BCA">Virtual Account BCA</option>
+                <option value="Virtual Account BNI">Virtual Account BNI</option>
+                <option value="Virtual Account Mandiri">Virtual Account Mandiri</option>
+              </select>
               <p>No Rekening:</p>
               <input
                 type="text"
@@ -90,6 +96,7 @@ export default function Profile() {
               />
             </>
           )}
+
           <button type="submit" className="bg-blue-600 text-white px-4 py-2 w-full rounded">
             Update Profile
           </button>
