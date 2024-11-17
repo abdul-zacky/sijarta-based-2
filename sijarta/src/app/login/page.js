@@ -25,7 +25,7 @@ export default function Login() {
 
   return (
     <div className="container mx-auto max-w-md p-8 bg-white rounded-lg shadow-lg mt-20">
-      <h1 className="text-2xl font-bold text-center mb-4">Login</h1>
+      <h1 className="text-2xl text-black font-bold text-center mb-4">Login</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       <form onSubmit={handleLogin} className="space-y-4">
         <input
@@ -44,7 +44,7 @@ export default function Login() {
           className="border p-2 w-full rounded"
           required
         />
-        <button type="submit" className="bg-blue-600 text-black px-4 py-2 w-full rounded">
+        <button type="submit" className="bg-blue-600 px-4 py-2 w-full rounded">
           Login
         </button>
       </form>

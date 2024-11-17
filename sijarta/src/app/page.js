@@ -10,7 +10,7 @@ export default function LandingPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md text-center max-w-sm w-full">
-        <h1 className="text-2xl font-bold mb-6">SIJARTA By Based</h1>
+        <h1 className="text-2xl text-black font-bold mb-6">SIJARTA By Based</h1>
 
         <div className="space-y-4">
           <button
