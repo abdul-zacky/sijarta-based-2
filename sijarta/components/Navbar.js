@@ -39,23 +39,23 @@ const Navbar = () => {
           {role === 'Pengguna' && (
             <>
               <span className="text-gray-300">{`Role: ${role} | ${name}`}</span>
-              <Link href="/" className="text-gray-300 hover:text-white">Homepage</Link>
+              <Link href="/services" className="text-gray-300 hover:text-white">Homepage</Link>
               <Link href="/mypay" className="text-gray-300 hover:text-white">MyPay</Link>
               <Link href="/orders" className="text-gray-300 hover:text-white">Kelola Pesanan Saya</Link>
               <Link href="/discounts" className="text-gray-300 hover:text-white">Diskon</Link>
               <Link href="/profile" className="text-gray-300 hover:text-white">Profile</Link>
-              <button onClick={handleLogout} className="text-gray-300 hover:text-white">Logout</button>
+              <Link href="/login" className="text-gray-300 hover:text-white"><button onClick={handleLogout} className="text-gray-300 hover:text-white">Logout</button></Link>
             </>
           )}
           {role === 'Pekerja' && (
             <>
               <span className="text-gray-300">{`Role: ${role} | ${name}`}</span>
-              <Link href="/" className="text-gray-300 hover:text-white">Homepage</Link>
+              <Link href="/services" className="text-gray-300 hover:text-white">Homepage</Link>
               <Link href="/work-management" className="text-gray-300 hover:text-white">Kelola Pekerjaan Saya</Link>
               <Link href="/work-status" className="text-gray-300 hover:text-white">Kelola Status Pekerjaan</Link>
               <Link href="/mypay" className="text-gray-300 hover:text-white">MyPay</Link>
               <Link href="/profile" className="text-gray-300 hover:text-white">Profile</Link>
-              <button onClick={handleLogout} className="text-gray-300 hover:text-white">Logout</button>
+              <Link href="/login" className="text-gray-300 hover:text-white"><button onClick={handleLogout} className="text-gray-300 hover:text-white">Logout</button></Link>
             </>
           )}
         </div>

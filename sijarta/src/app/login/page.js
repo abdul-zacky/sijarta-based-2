@@ -17,7 +17,7 @@ export default function Login() {
 
     if (user) {
       localStorage.setItem('user', JSON.stringify(user));
-      router.push('/');
+      router.push('/services');
     } else {
       setError('Invalid phone number or password');
     }
