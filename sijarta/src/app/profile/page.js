@@ -37,11 +37,11 @@ export default function Profile() {
 
   return (
     <div className="container mx-auto max-w-md p-6 bg-white rounded-lg shadow-lg mt-8">
-      <h1 className="text-2xl font-bold text-center mb-4">Profile</h1>
+      <h1 className="text-2xl text-black font-bold text-center mb-4">Profile</h1>
       {user.role === 'Guest' ? (
-        <p className="text-center text-gray-500">Please log in to view your profile.</p>
+        <p className="text-center text-black text-gray-500">Please log in to view your profile.</p>
       ) : (
-        <form onSubmit={handleUpdate} className="space-y-4">
+        <form onSubmit={handleUpdate} className="space-y-4 text-black">
           <p>Role: {user.role}</p>
           <p>Name: {user.name}</p>
           <p>No HP:</p>

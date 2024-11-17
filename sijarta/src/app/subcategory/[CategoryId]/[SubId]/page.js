@@ -107,13 +107,9 @@ export default function SubcategoryPage({ params }) {
         <h1 className="text-2xl font-bold mb-4">Subkategori Jasa {subId}</h1>
         <h1 className="text-2xl font-bold mb-4">Kategori Jasa {categoryId}</h1>
       </div>
-      
-        {true && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-            <div className="bg-white p-6 rounded shadow-lg w-96">
             {showModal && (
             <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-                <div className="bg-white p-6 rounded shadow-lg w-96">
+                <div className="bg-white p-6 text-black rounded shadow-lg w-96">
                 <h2 className="text-lg font-bold mb-4">Pesan Jasa</h2>
                 <div className="mb-4">
                     <label className="block text-sm font-medium mb-1">Tanggal Pemesanan:</label>
@@ -176,9 +172,7 @@ export default function SubcategoryPage({ params }) {
                 </div>
             </div>
             )}
-            </div>
-        </div>
-        )}
+
       {/* Guest Role */}
       {role === "Guest" && (
         <div className="text-center">
