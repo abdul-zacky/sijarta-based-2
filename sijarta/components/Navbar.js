@@ -2,12 +2,14 @@
 "use client";
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 const Navbar = () => {
   // State to hold the user role; this could come from an auth context or global state
   const [role, setRole] = useState('Guest'); // Possible roles: 'Guest', 'Pengguna', 'Pekerja'
   const [name, setName] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     // Simulate fetching the logged-in user's data
@@ -19,6 +21,7 @@ const Navbar = () => {
   const handleLogout = () => {
     // Clear user session (example)
     localStorage.removeItem('user');
+    router.push('/');
     setRole('Guest');
     setName('');
   };
