@@ -43,7 +43,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex text-black items-center justify-center min-h-screen bg-gray-100">
       <form onSubmit={handleRegister} className="bg-white p-8 rounded-lg shadow-md max-w-md w-full space-y-4">
         <h1 className="text-2xl font-bold mb-4">Register</h1>
         {error && <p className="text-red-500">{error}</p>}
@@ -157,7 +157,7 @@ export default function RegisterPage() {
           </>
         )}
 
-        <button type="submit" className="bg-blue-500 text-black py-2 w-full rounded-lg">
+        <button type="submit" className="bg-blue-500 text-white py-2 w-full rounded-lg">
           Register
         </button>
       </form>
