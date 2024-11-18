@@ -1,25 +1,20 @@
-// src/app/login/page.js
 "use client";
 
+import { useState } from "react";
+import { useAuth } from "/context/AuthContext";
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 export default function Login() {
+  const { login } = useAuth();
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find((u) => u.phone === phone && u.password === password);
-
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-      router.push('/services');
-    } else {
-      setError('Invalid phone number or password');
+    if (!login(phone, password)) {
+      setError("Invalid phone number or password");
     }
   };
 
