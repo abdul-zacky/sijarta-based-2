@@ -42,8 +42,21 @@ export default function Profile() {
         <p className="text-center text-black text-gray-500">Please log in to view your profile.</p>
       ) : (
         <form onSubmit={handleUpdate} className="space-y-4 text-black">
+          <div className="flex justify-center mb-4">
+            <img
+              src={profile.profilePicture || "https://www.svgrepo.com/show/503076/profile.svg"} // Default placeholder
+              alt="Profile Picture"
+              className="w-24 h-24 rounded-full border"
+            />
+          </div>
           <p>Role: {user.role}</p>
           <p>Name: {user.name}</p>
+          {user.role === 'Pekerja' && (
+            <>
+            <p>Ratings: x/10</p>
+            <p>Jumlah pesanan selesai: X</p>
+            </>
+          )}
           <p>No HP:</p>
           <input
             type="text"

@@ -8,6 +8,16 @@ export default function ViewPemesananJasa() {
   const [isTestimonialModalOpen, setIsTestimonialModalOpen] = useState(false);
   const [selectedOrderIndex, setSelectedOrderIndex] = useState(null);
   const [testimonials, setTestimonials] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [filters, setFilters] = useState({
+    subkategori: "",
+    status: "",
+    search: "",
+  });
+
+  useEffect(() => {
+    applyFilters(filters);
+  }, [orders]);
 
   // Dummy data for testing
   useEffect(() => {
@@ -52,15 +62,40 @@ export default function ViewPemesananJasa() {
     );
 
     if (!hasDummyData) {
-      // If dummy data is not already included, add it to savedOrders
       const updatedOrders = [...savedOrders, ...dummyData];
       localStorage.setItem("orders", JSON.stringify(updatedOrders));
       setOrders(updatedOrders);
+      setFilteredOrders(updatedOrders); // Initialize filteredOrders
     } else {
-      // Otherwise, just set the existing savedOrders
       setOrders(savedOrders);
+      setFilteredOrders(savedOrders); // Initialize filteredOrders
     }
   }, []);
+
+  const handleFilterChange = (key) => (e) => {
+    const value = e.target.value;
+    const newFilters = { ...filters, [key]: value };
+    setFilters(newFilters);
+    applyFilters(newFilters);
+  };
+
+  const applyFilters = (currentFilters) => {
+    let result = [...orders];
+    if (currentFilters.subkategori) {
+      result = result.filter((order) =>
+        order.subkategori.includes(currentFilters.subkategori)
+      );
+    }
+    if (currentFilters.status) {
+      result = result.filter((order) => order.status === currentFilters.status);
+    }
+    if (currentFilters.search) {
+      result = result.filter((order) =>
+        order.namaPekerja.toLowerCase().includes(currentFilters.search.toLowerCase())
+      );
+    }
+    setFilteredOrders(result);
+  };
 
   const handleCancel = (index) => {
     const updatedOrders = orders.map((order, i) => {
@@ -71,6 +106,7 @@ export default function ViewPemesananJasa() {
     });
     setOrders(updatedOrders);
     localStorage.setItem("orders", JSON.stringify(updatedOrders));
+    applyFilters(filters); // Reapply filters after cancellation
   };
 
   const handleAddTestimonial = (testimonial) => {
@@ -88,6 +124,46 @@ export default function ViewPemesananJasa() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">View Pemesanan Jasa</h1>
+      <div className="flex flex-wrap gap-4 mb-4">
+        <select
+          value={filters.subkategori}
+          onChange={handleFilterChange("subkategori")}
+          className="border p-2 rounded w-full md:w-1/3"
+        >
+          <option value="">Pilih Subkategori</option>
+          <option value="Subkategori Jasa 1">Subkategori Jasa 1</option>
+          <option value="Subkategori Jasa 2">Subkategori Jasa 2</option>
+          <option value="Subkategori Jasa 3">Subkategori Jasa 3</option>
+        </select>
+
+        <select
+          value={filters.status}
+          onChange={handleFilterChange("status")}
+          className="border p-2 rounded w-full md:w-1/3"
+        >
+          <option value="">Pilih Status</option>
+          <option value="Dibatalkan">Dibatalkan</option>
+          <option value="Menunggu Pembayaran">Menunggu Pembayaran</option>
+          <option value="Pesanan Selesai">Pesanan Selesai</option>
+        </select>
+
+        <input
+          type="text"
+          placeholder="Search"
+          value={filters.search}
+          onChange={handleFilterChange("search")}
+          className="border p-2 rounded w-full md:w-1/3"
+        />
+        <button
+          onClick={() => {
+            setFilters({ subkategori: "", status: "", search: "" });
+            setFilteredOrders(orders); // Reset to the original order list
+          }}
+          className="bg-gray-500 text-white px-4 py-2 rounded"
+        >
+          Reset Filters
+        </button>
+      </div>
       <table className="table-auto border-collapse border border-gray-400 w-full text-center">
         <thead className="bg-gray-200 text-black">
           <tr>
@@ -100,7 +176,7 @@ export default function ViewPemesananJasa() {
           </tr>
         </thead>
         <tbody>
-          {orders.map((order, index) => (
+          {filteredOrders.map((order, index) => (
             <tr key={index}>
               <td className="border border-gray-400 px-4 py-2">
                 {order.subkategori || "N/A"}

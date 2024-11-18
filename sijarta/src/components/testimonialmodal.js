@@ -23,7 +23,7 @@ export default function TestimonialModal({ isOpen, onClose, onSubmit }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-4">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg relative">
+      <div className="bg-white p-6 text-black rounded-lg shadow-lg w-full max-w-lg relative">
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-gray-600 hover:text-gray-800 font-bold text-xl"
