@@ -1,52 +1,89 @@
-// src/app/register/page.js
-
 "use client";
 
-import { useState } from 'react';
+import { useState } from "react";
+import { useAuth } from "/context/AuthContext";
 import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
+  const { register } = useAuth();
+  const [role, setRole] = useState("Pengguna");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [gender, setGender] = useState("");
+  const [phone, setPhone] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [address, setAddress] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [npwp, setNpwp] = useState("");
+  const [photoUrl, setPhotoUrl] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
-  const [role, setRole] = useState('Pengguna');
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [gender, setGender] = useState('');
-  const [phone, setPhone] = useState('');
-  const [birthDate, setBirthDate] = useState('');
-  const [address, setAddress] = useState('');
-  const [bankName, setBankName] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [npwp, setNpwp] = useState('');
-  const [photoUrl, setPhotoUrl] = useState('');
-  const [error, setError] = useState('');
 
   const handleRegister = (e) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+  
     // Check for unique phone number
-    if (users.some((user) => user.phone === phone)) {
-      setError('Phone number already registered.');
+    const phoneExists = users.some((user) => user.phone === phone);
+    if (phoneExists) {
+      setError("Phone number already registered.");
       return;
     }
-
+  
     // Check for unique NPWP for "Pekerja"
-    if (role === 'Pekerja' && users.some((user) => user.npwp === npwp)) {
-      setError('NPWP already registered.');
-      return;
+    if (role === "Pekerja") {
+      const npwpExists = users.some((user) => user.npwp === npwp);
+      if (npwpExists) {
+        setError("NPWP already registered.");
+        return;
+      }
     }
-
-    const newUser = { role, name, password, gender, phone, birthDate, address, bankName, accountNumber, npwp, photoUrl };
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    router.push('/login');
-  };
+  
+    // Create a new user object
+    const newUser = {
+      role,
+      name,
+      password,
+      gender,
+      phone,
+      birthDate,
+      address,
+      bankName,
+      accountNumber,
+      npwp,
+      photoUrl,
+    };
+  
+    // Add new user to the list
+    const updatedUsers = [...users, newUser];
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+    
+    // Clear error and redirect
+    setError("");
+    setPhone("");
+    setPassword("");
+    setName("");
+    setAddress("");
+    setNpwp("");
+    setPhotoUrl("");
+    setGender("");
+    setBankName("");
+    setAccountNumber("");
+    setBirthDate("");
+    router.push("/login");
+    alert("Registration successful!");
+  };  
 
   return (
-    <div className="flex text-black items-center justify-center min-h-screen bg-gray-100">
-      <form onSubmit={handleRegister} className="bg-white p-8 rounded-lg shadow-md max-w-md w-full space-y-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <form
+        onSubmit={handleRegister}
+        className="bg-white p-8 rounded-lg shadow-md max-w-md w-full space-y-4"
+      >
         <h1 className="text-2xl font-bold mb-4">Register</h1>
         {error && <p className="text-red-500">{error}</p>}
+
         <select
           value={role}
           onChange={(e) => setRole(e.target.value)}
@@ -76,11 +113,21 @@ export default function RegisterPage() {
 
         <div className="flex gap-4">
           <label className="flex items-center">
-            <input type="radio" value="L" checked={gender === 'L'} onChange={(e) => setGender(e.target.value)} />
+            <input
+              type="radio"
+              value="L"
+              checked={gender === "L"}
+              onChange={(e) => setGender(e.target.value)}
+            />
             <span className="ml-2">Laki-Laki</span>
           </label>
           <label className="flex items-center">
-            <input type="radio" value="P" checked={gender === 'P'} onChange={(e) => setGender(e.target.value)} />
+            <input
+              type="radio"
+              value="P"
+              checked={gender === "P"}
+              onChange={(e) => setGender(e.target.value)}
+            />
             <span className="ml-2">Perempuan</span>
           </label>
         </div>
@@ -113,7 +160,7 @@ export default function RegisterPage() {
         />
 
         {/* Additional Fields for "Pekerja" */}
-        {role === 'Pekerja' && (
+        {role === "Pekerja" && (
           <>
             <select
               value={bankName}
@@ -124,9 +171,15 @@ export default function RegisterPage() {
               <option value="">Nama Bank</option>
               <option value="GoPay">GoPay</option>
               <option value="OVO">OVO</option>
-              <option value="Virtual Account BCA">Virtual Account BCA</option>
-              <option value="Virtual Account BNI">Virtual Account BNI</option>
-              <option value="Virtual Account Mandiri">Virtual Account Mandiri</option>
+              <option value="Virtual Account BCA">
+                Virtual Account BCA
+              </option>
+              <option value="Virtual Account BNI">
+                Virtual Account BNI
+              </option>
+              <option value="Virtual Account Mandiri">
+                Virtual Account Mandiri
+              </option>
             </select>
 
             <input
@@ -157,7 +210,10 @@ export default function RegisterPage() {
           </>
         )}
 
-        <button type="submit" className="bg-blue-500 text-white py-2 w-full rounded-lg">
+        <button
+          type="submit"
+          className="bg-blue-500 text-white py-2 w-full rounded-lg"
+        >
           Register
         </button>
       </form>
