@@ -212,7 +212,7 @@ export default function RegisterPage() {
 
         <button
           type="submit"
-          className="bg-blue-500 text-black py-2 w-full rounded-lg"
+          className="bg-blue-500 text-white py-2 w-full rounded-lg"
         >
           Register
         </button>

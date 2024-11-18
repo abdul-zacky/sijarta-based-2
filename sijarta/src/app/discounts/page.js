@@ -5,7 +5,7 @@ import PromoList from '../../components/promolist';
 
 export default function DiskonPage() {
   return (
-    <div className="grid grid-row items-center min-h-screen bg-gray-100 py-12 px-6">
+    <div className="grid grid-row items-center min-h-screen text-black bg-gray-100 py-12 px-6">
       <h1 className="text-5xl font-bold text-center mb-8 tracking-wide">Diskon</h1>
 
       <div className="flex flex-col items-center w-full">
