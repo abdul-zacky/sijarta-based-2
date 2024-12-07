@@ -1,46 +1,49 @@
-import { neon } from '@neondatabase/serverless';
+// src/app/login/page.js
+"use client";
 
-export default async function PenggunaPage() {
-  const sql = neon(process.env.DATABASE_URL);
+import { useState } from "react";
+import { useAuth } from "/context/AuthContext";
+import { useRouter } from 'next/navigation';
 
-  // Fetch all pengguna rows
-  const rows = await sql`SELECT * FROM sijarta.pengguna`;
+export default function Login() {
+  const { login } = useAuth();
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (!login(phone, password)) {
+      setError("Invalid phone number or password");
+    }
+  };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">All Pengguna</h1>
-      {rows.length === 0 ? (
-        <p>No records found.</p>
-      ) : (
-        <table className="min-w-full border-collapse border border-gray-300">
-          <thead>
-            <tr>
-              <th className="border border-gray-300 px-4 py-2">ID</th>
-              <th className="border border-gray-300 px-4 py-2">Nama</th>
-              <th className="border border-gray-300 px-4 py-2">Jenis Kelamin</th>
-              <th className="border border-gray-300 px-4 py-2">No HP</th>
-              <th className="border border-gray-300 px-4 py-2">Pwd</th>
-              <th className="border border-gray-300 px-4 py-2">Tgl Lahir</th>
-              <th className="border border-gray-300 px-4 py-2">Alamat</th>
-              <th className="border border-gray-300 px-4 py-2">Saldo MyPay</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((pengguna) => (
-              <tr key={pengguna.id}>
-                <td className="border border-gray-300 px-4 py-2">{pengguna.id}</td>
-                <td className="border border-gray-300 px-4 py-2">{pengguna.nama}</td>
-                <td className="border border-gray-300 px-4 py-2">{pengguna.jenis_kelamin}</td>
-                <td className="border border-gray-300 px-4 py-2">{pengguna.no_hp}</td>
-                <td className="border border-gray-300 px-4 py-2">{pengguna.pwd}</td>
-                <td className="border border-gray-300 px-4 py-2">{pengguna.tgl_lahir?.toLocaleDateString()}</td>
-                <td className="border border-gray-300 px-4 py-2">{pengguna.alamat}</td>
-                <td className="border border-gray-300 px-4 py-2">{pengguna.saldo_mypay}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+    <div className="container mx-auto max-w-md p-8 bg-white rounded-lg shadow-lg mt-20">
+      <h1 className="text-2xl text-black font-bold text-center mb-4">Login</h1>
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+      <form onSubmit={handleLogin} className="space-y-4">
+        <input
+          type="text"
+          placeholder="No HP"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          className="border p-2 w-full rounded"
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="border p-2 w-full rounded"
+          required
+        />
+        <button type="submit" className="bg-blue-600 px-4 py-2 w-full rounded">
+          Login
+        </button>
+      </form>
     </div>
   );
 }
