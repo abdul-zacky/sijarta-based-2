@@ -3,6 +3,7 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
+import pool from "../utils/postgres";
 
 export default function LandingPage() {
   const router = useRouter();
