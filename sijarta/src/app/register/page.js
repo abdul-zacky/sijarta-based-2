@@ -1,4 +1,4 @@
-// src/app/register/page.js
+// app/register/page.js
 "use client";
 
 import { useState } from "react";
@@ -21,27 +21,9 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-  
-    // Check for unique phone number
-    const phoneExists = users.some((user) => user.phone === phone);
-    if (phoneExists) {
-      setError("Phone number already registered.");
-      return;
-    }
-  
-    // Check for unique NPWP for "Pekerja"
-    if (role === "Pekerja") {
-      const npwpExists = users.some((user) => user.npwp === npwp);
-      if (npwpExists) {
-        setError("NPWP already registered.");
-        return;
-      }
-    }
-  
-    // Create a new user object
+
     const newUser = {
       role,
       name,
@@ -53,27 +35,17 @@ export default function RegisterPage() {
       bankName,
       accountNumber,
       npwp,
-      photoUrl,
+      photoUrl
     };
-  
-    // Add new user to the list
-    const updatedUsers = [...users, newUser];
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-    
-    // Clear error and redirect
-    setError("");
-    setPhone("");
-    setPassword("");
-    setName("");
-    setAddress("");
-    setNpwp("");
-    setPhotoUrl("");
-    setGender("");
-    setBankName("");
-    setAccountNumber("");
-    setBirthDate("");
-    router.push("/login");
-    alert("Registration successful!");
+
+    const result = await register(newUser);
+
+    if (!result.success) {
+      setError(result.error || "Registration failed.");
+    } else {
+      alert("Registration successful!");
+      router.push("/login");
+    }
   };  
 
   return (
@@ -160,7 +132,6 @@ export default function RegisterPage() {
           required
         />
 
-        {/* Additional Fields for "Pekerja" */}
         {role === "Pekerja" && (
           <>
             <select
@@ -172,15 +143,9 @@ export default function RegisterPage() {
               <option value="">Nama Bank</option>
               <option value="GoPay">GoPay</option>
               <option value="OVO">OVO</option>
-              <option value="Virtual Account BCA">
-                Virtual Account BCA
-              </option>
-              <option value="Virtual Account BNI">
-                Virtual Account BNI
-              </option>
-              <option value="Virtual Account Mandiri">
-                Virtual Account Mandiri
-              </option>
+              <option value="Virtual Account BCA">Virtual Account BCA</option>
+              <option value="Virtual Account BNI">Virtual Account BNI</option>
+              <option value="Virtual Account Mandiri">Virtual Account Mandiri</option>
             </select>
 
             <input

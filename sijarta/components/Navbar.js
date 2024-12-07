@@ -10,6 +10,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
+    router.push('/login');
   };
 
   return (
@@ -19,7 +20,7 @@ const Navbar = () => {
           Sijarta by BASED
         </Link>
         <div className="space-x-4 flex items-center">
-          {!user ? (
+          {(!user || !user.role) ? (
             <>
               <Link href="/login" className="text-gray-300 hover:text-white">
                 Login
@@ -31,7 +32,7 @@ const Navbar = () => {
           ) : (
             <>
               <span className="text-gray-300">{`Role: ${user.role} | ${user.name}`}</span>
-              {user.role === "Pengguna" && (
+              {user.role === "Pelanggan" && (
                 <>
                   <Link href="/services" className="text-gray-300 hover:text-white">
                     Homepage

@@ -1,4 +1,4 @@
-// src/app/login/page.js
+// app/login/page.js
 "use client";
 
 import { useState } from "react";
@@ -12,10 +12,13 @@ export default function Login() {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (!login(phone, password)) {
+    const success = await login(phone, password);
+    if (!success) {
       setError("Invalid phone number or password");
+    } else {
+      router.push("/services");
     }
   };
 

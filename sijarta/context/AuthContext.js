@@ -1,55 +1,71 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // Initialize user as null
-  const router = useRouter();
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
 
-  // Load user from localStorage in the browser
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
-      if (storedUser) {
-        setUser(storedUser);
-      }
-    }
-  }, []);
+  /**
+   * Logs in the user by verifying credentials against the database
+   * via the /api/login endpoint. If successful, sets `user` state.
+   * @param {string} phone
+   * @param {string} password
+   * @returns {Promise<boolean>} true if login successful, false otherwise
+   */
+  const login = async (phone, password) => {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, password })
+    });
 
-  const login = (phone, password) => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const foundUser = users.find((u) => u.phone === phone && u.password === password);
-
-    if (foundUser) {
-      setUser(foundUser);
-      localStorage.setItem("user", JSON.stringify(foundUser));
-      router.push("/services");
+    if (res.ok) {
+      const userData = await res.json();
+      setUser(userData);
       return true;
+    } else {
+      return false;
     }
-    return false;
   };
 
-  const register = (newUser) => {
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
-    setUser(newUser);
+  /**
+   * Registers a new user by sending their data to the /api/register endpoint.
+   * On success, sets `user` state to the newly created user object.
+   * @param {object} newUser - {role, name, password, gender, phone, birthDate, address, bankName, accountNumber, npwp, photoUrl}
+   * @returns {Promise<{success: boolean, error?: string}>}
+   */
+  const registerUser = async (newUser) => {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newUser)
+    });
+
+    const result = await res.json();
+    if (res.ok) {
+      setUser(result);
+      return { success: true };
+    } else {
+      return { success: false, error: result.error };
+    }
   };
 
+  /**
+   * Logs out the current user by clearing `user` state.
+   * In a full production setup, you'd also remove any session cookies on the server side.
+   */
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user");
-    router.push("/login");
+    // If using sessions or JWTs, also clear them server-side.
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider value={{ user, login, register: registerUser, logout }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
 export const useAuth = () => useContext(AuthContext);
