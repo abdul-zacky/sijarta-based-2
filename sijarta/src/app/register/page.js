@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
   const { register } = useAuth();
-  const [role, setRole] = useState("Pengguna");
+  const [role, setRole] = useState("Pelanggan");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [gender, setGender] = useState("");
@@ -62,7 +62,7 @@ export default function RegisterPage() {
           onChange={(e) => setRole(e.target.value)}
           className="border p-2 w-full rounded"
         >
-          <option value="Pengguna">Pengguna</option>
+          <option value="Pelanggan">Pelanggan</option>
           <option value="Pekerja">Pekerja</option>
         </select>
 

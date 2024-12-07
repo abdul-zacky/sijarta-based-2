@@ -34,7 +34,7 @@ export async function POST(request) {
     if (pekerjaCheck.length > 0) {
       role = 'Pekerja';
     } else if (pelangganCheck.length > 0) {
-      role = 'Pengguna'; // Or "Pelanggan" if that's your naming
+      role = 'Pelanggan'; // Or "Pelanggan" if that's your naming
     }
 
     return NextResponse.json({
