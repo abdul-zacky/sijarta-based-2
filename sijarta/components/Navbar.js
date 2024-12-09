@@ -50,7 +50,7 @@ const Navbar = () => {
                   <Link href="/services" className="text-gray-300 hover:text-white">
                     Homepage
                   </Link>
-                  <Link href="/work-management" className="text-gray-300 hover:text-white">
+                  <Link href="/orders" className="text-gray-300 hover:text-white">
                     Kelola Pekerjaan Saya
                   </Link>
                   <Link href="/work-status" className="text-gray-300 hover:text-white">

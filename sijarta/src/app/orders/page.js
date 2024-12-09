@@ -314,20 +314,22 @@ export default function ViewOrdersPage() {
       const fetchOrders = async () => {
         try {
           const res = await fetch(`/api/orders?id=${profile.id}`);
-          const data = await res.json();
-          if (data.orders) {
-            setOrders(data.orders);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.orders) {
+              setOrders(data.orders);
+            } 
           } else {
-            console.error("No orders found");
+            console.error("Failed to fetch orders. Status:", res.status);
           }
         } catch (error) {
           console.error("Error fetching orders:", error);
         }
       };
-
+  
       fetchOrders();
     }
-  }, [profile.id]); // Fetch orders when profile.id is available
+  }, [profile.id]);
 
   const handleAddTestimonial = (testimonial) => {
     console.log("Testimoni ditambahkan:", testimonial);
