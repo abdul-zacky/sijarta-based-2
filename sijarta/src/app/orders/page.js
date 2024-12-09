@@ -264,6 +264,7 @@
 // }\
 
 "use client";
+import TestimonialModal from "../../components/testimonialmodal";
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
@@ -278,6 +279,8 @@ export default function ViewOrdersPage() {
     role: "Guest",
     name: "",
   });
+  const [isTestimonialModalOpen, setIsTestimonialModalOpen] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const router = useRouter();
 
   // Fetch profile first
@@ -326,6 +329,17 @@ export default function ViewOrdersPage() {
     }
   }, [profile.id]); // Fetch orders when profile.id is available
 
+  const handleAddTestimonial = (testimonial) => {
+    console.log("Testimoni ditambahkan:", testimonial);
+    // Logic untuk menyimpan testimoni, misalnya ke API atau local storage
+    setIsTestimonialModalOpen(false);
+  };
+
+  const handleTestimoni = (order) => {
+    setSelectedOrder(order);
+    setIsTestimonialModalOpen(true);
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">View Pemesanan Jasa</h1>
@@ -351,7 +365,10 @@ export default function ViewOrdersPage() {
                 <td className="border px-4 py-2">{order.status}</td>
                 <td className="border px-4 py-2">
                   {order.status === "Pesanan Selesai" && (
-                    <button className="bg-green-500 text-white px-4 py-2 rounded">
+                    <button
+                      onClick={() => handleTestimoni(order)}
+                      className="bg-green-500 text-white px-4 py-2 rounded"
+                    >
                       Buat Testimoni
                     </button>
                   )}
@@ -372,6 +389,13 @@ export default function ViewOrdersPage() {
           )}
         </tbody>
       </table>
+
+      <TestimonialModal
+        isOpen={isTestimonialModalOpen}
+        onClose={() => setIsTestimonialModalOpen(false)}
+        onSubmit={handleAddTestimonial}
+        order={selectedOrder} // Pass selected order to modal
+      />
 
       <h2 className="text-xl font-semibold mt-4">Daftar Testimoni</h2>
       {/* Here you can map through and display the testimoni */}
