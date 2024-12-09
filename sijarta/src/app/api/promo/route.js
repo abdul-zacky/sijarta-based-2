@@ -6,7 +6,6 @@ export async function GET(req) {
   const sql = neon(process.env.DATABASE_URL);
 
   try {
-    // Fetch active promos
     const promos = await sql`
       SELECT 
         p.kode,
@@ -25,8 +24,7 @@ export async function GET(req) {
 
     return NextResponse.json({ promos });
   } catch (error) {
-    // Print out the full error object for debugging
-    console.error('Error fetching promos:', error); // This logs the full error
+    console.error('Error fetching promos:', error); 
     return NextResponse.json({ error: 'Internal server error', details: error.message || error }, { status: 500 });
   }
 }
