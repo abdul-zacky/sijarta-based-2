@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '/context/AuthContext';
-// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export default function Profile() {
   const { user } = useAuth();
-  // const router = useRouter();
+  const router = useRouter();
   const [profile, setProfile] = useState({
     phone: '',
     address: '',
@@ -92,13 +92,13 @@ export default function Profile() {
         <p className="text-center text-black text-gray-500">Please log in to view your profile.</p>
       ) : (
         <form onSubmit={handleUpdate} className="space-y-4 text-black">
-          {/* <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-4">
             <img
               src={"https://www.svgrepo.com/show/503076/profile.svg"}
               alt="Profile Picture"
               className="w-24 h-24 rounded-full border"
             />
-          </div> */}
+          </div>
           <p>Role: {profile.role}</p>
           <p>Name: {profile.name}</p>
           {profile.role === 'Pekerja' && (

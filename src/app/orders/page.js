@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import TestimonialModal from "../../components/testimonialmodal";
 
 export default function ViewPemesananJasa() {
@@ -15,42 +15,16 @@ export default function ViewPemesananJasa() {
     search: "",
   });
 
-  // Memoized applyFilters function
-  const applyFilters = useCallback(
-    (currentFilters) => {
-      let result = [...orders];
-      if (currentFilters.subkategori) {
-        result = result.filter((order) =>
-          order.subkategori.includes(currentFilters.subkategori)
-        );
-      }
-      if (currentFilters.status) {
-        result = result.filter((order) => order.status === currentFilters.status);
-      }
-      if (currentFilters.search) {
-        result = result.filter((order) =>
-          order.namaPekerja
-            .toLowerCase()
-            .includes(currentFilters.search.toLowerCase())
-        );
-      }
-      setFilteredOrders(result);
-    },
-    [orders] // Dependency: `orders`
-  );
-
-  // Apply filters whenever `filters` or `orders` changes
   useEffect(() => {
     applyFilters(filters);
-  }, [applyFilters, filters]);
+  }, [orders]);
 
-  // Load orders and initialize filters on component mount
+  // Dummy data for testing
   useEffect(() => {
     const savedOrders = JSON.parse(localStorage.getItem("orders")) || [];
-    const savedTestimonials =
-      JSON.parse(localStorage.getItem("testimonials")) || [];
+    const savedTestimonials = JSON.parse(localStorage.getItem("testimonials")) || [];
     setTestimonials(savedTestimonials);
-
+    
     const dummyData = [
       {
         subkategori: "Subkategori Jasa 1",
@@ -75,6 +49,7 @@ export default function ViewPemesananJasa() {
       },
     ];
 
+    // Check if any of the dummy data already exists in savedOrders
     const hasDummyData = dummyData.every((dummy) =>
       savedOrders.some(
         (order) =>
@@ -104,6 +79,24 @@ export default function ViewPemesananJasa() {
     applyFilters(newFilters);
   };
 
+  const applyFilters = (currentFilters) => {
+    let result = [...orders];
+    if (currentFilters.subkategori) {
+      result = result.filter((order) =>
+        order.subkategori.includes(currentFilters.subkategori)
+      );
+    }
+    if (currentFilters.status) {
+      result = result.filter((order) => order.status === currentFilters.status);
+    }
+    if (currentFilters.search) {
+      result = result.filter((order) =>
+        order.namaPekerja.toLowerCase().includes(currentFilters.search.toLowerCase())
+      );
+    }
+    setFilteredOrders(result);
+  };
+
   const handleCancel = (index) => {
     const updatedOrders = orders.map((order, i) => {
       if (i === index) {
@@ -117,10 +110,7 @@ export default function ViewPemesananJasa() {
   };
 
   const handleAddTestimonial = (testimonial) => {
-    const updatedTestimonials = [
-      ...testimonials,
-      { ...testimonial, orderIndex: selectedOrderIndex },
-    ];
+    const updatedTestimonials = [...testimonials, { ...testimonial, orderIndex: selectedOrderIndex }];
     setTestimonials(updatedTestimonials);
     localStorage.setItem("testimonials", JSON.stringify(updatedTestimonials)); // Save to localStorage
     setIsTestimonialModalOpen(false);
@@ -200,7 +190,9 @@ export default function ViewPemesananJasa() {
               <td className="border border-gray-400 px-4 py-2">
                 {order.namaPekerja || "TBD"}
               </td>
-              <td className="border border-gray-400 px-4 py-2">{order.status}</td>
+              <td className="border border-gray-400 px-4 py-2">
+                {order.status}
+              </td>
               <td className="border border-gray-400 px-4 py-2">
                 {order.status === "Menunggu Pembayaran" ||
                 order.status === "Mencari Pekerja Terdekat" ? (
@@ -247,29 +239,18 @@ export default function ViewPemesananJasa() {
 
                 <div className="flex items-center mb-4">
                   {Array.from({ length: testimonial.rating }).map((_, starIndex) => (
-                    <span key={starIndex} className="text-yellow-500 text-lg">
-                      ★
-                    </span>
+                    <span key={starIndex} className="text-yellow-500 text-lg">★</span>
                   ))}
-                  {Array.from({ length: 10 - testimonial.rating }).map(
-                    (_, starIndex) => (
-                      <span key={starIndex} className="text-gray-300 text-lg">
-                        ★
-                      </span>
-                    )
-                  )}
-                  <span className="ml-2 text-gray-600">
-                    ({testimonial.rating}/10)
-                  </span>
+                  {Array.from({ length: 10 - testimonial.rating }).map((_, starIndex) => (
+                    <span key={starIndex} className="text-gray-300 text-lg">★</span>
+                  ))}
+                  <span className="ml-2 text-gray-600">({testimonial.rating}/10)</span>
                 </div>
 
                 <p className="text-gray-700 mb-4">{testimonial.comment}</p>
 
                 <div className="text-sm text-gray-500">
-                  <p>
-                    <strong>Nama Pekerja:</strong>{" "}
-                    {orders[testimonial.orderIndex]?.namaPekerja}
-                  </p>
+                  <p><strong>Nama Pekerja:</strong> {orders[testimonial.orderIndex]?.namaPekerja}</p>
                 </div>
               </div>
             ))}

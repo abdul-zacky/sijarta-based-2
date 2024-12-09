@@ -6,6 +6,7 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [balance, setBalance] = useState(0);
 
   /**
    * Logs in the user by verifying credentials against the database
@@ -24,6 +25,7 @@ export function AuthProvider({ children }) {
     if (res.ok) {
       const userData = await res.json();
       setUser(userData);
+      setBalance(userData.saldo_mypay);
       return true;
     } else {
       return false;
@@ -58,11 +60,12 @@ export function AuthProvider({ children }) {
    */
   const logout = () => {
     setUser(null);
+    setBalance(0);
     // If using sessions or JWTs, also clear them server-side.
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register: registerUser, logout }}>
+    <AuthContext.Provider value={{ user, balance, setBalance, login, register: registerUser, logout }}>
       {children}
     </AuthContext.Provider>
   );
