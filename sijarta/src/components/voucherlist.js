@@ -1,26 +1,26 @@
 "use client";
 
 import { useState } from 'react';
+import { useAuth } from '/context/AuthContext';
 import SuccessModal from './successmodal';
 import FailedModal from './failedmodal';
 
 export default function VoucherList({ vouchers }) {
-  if (!vouchers || vouchers.length === 0) {
-    return <p>No vouchers available</p>; // Menampilkan pesan jika data kosong
-  }
-
-  const [userBalance, setUserBalance] = useState(8000);
+  const { balance, setBalance } = useAuth();
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isFailedModalOpen, setIsFailedModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [selectedPaymentMethods, setSelectedPaymentMethods] = useState({});
-
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [selectedVoucher, setSelectedVoucher] = useState(null); // Menyimpan voucher yang dipilih
+  const [selectedVoucher, setSelectedVoucher] = useState(null); 
+
+  if (!vouchers || vouchers.length === 0) {
+    return <p>No vouchers available</p>; 
+  }
 
   const handleBuyVoucher = (voucher) => {
     setSelectedVoucher(voucher);
-    setIsPaymentModalOpen(true); // Membuka modal pembayaran
+    setIsPaymentModalOpen(true);
   };
 
   const handlePaymentMethodChange = (method) => {
@@ -31,7 +31,7 @@ export default function VoucherList({ vouchers }) {
   };
 
   const handleConfirmPurchase = () => {
-    const paymentMethod = selectedPaymentMethods[selectedVoucher.kode] || 'Metode'; // Default jika belum dipilih
+    const paymentMethod = selectedPaymentMethods[selectedVoucher.kode] || 'Metode'; 
 
     if (paymentMethod === 'Metode') {
       alert('Harap pilih metode pembayaran');
@@ -39,27 +39,25 @@ export default function VoucherList({ vouchers }) {
     }
 
     if (paymentMethod === 'MyPay') {
-      if (userBalance >= selectedVoucher.harga) {
-        // Jika cukup, kurangi saldo dan tampilkan pesan sukses
-        setUserBalance(userBalance - selectedVoucher.harga);
+      if (balance >= selectedVoucher.harga) {
+        const newBalance = balance - selectedVoucher.harga;
+        setBalance(newBalance);
         setModalMessage(
           `Selamat! Anda berhasil membeli voucher kode ${selectedVoucher.kode}. Voucher ini berlaku hingga ${selectedVoucher.berlaku} dengan kuota penggunaan sebanyak ${selectedVoucher.kuota} kali.`
         );
         setIsSuccessModalOpen(true);
       } else {
-        // Jika tidak cukup, tampilkan pesan gagal
         setModalMessage('Maaf, saldo Anda tidak cukup untuk membeli voucher ini.');
         setIsFailedModalOpen(true);
       }
     } else {
-      // Jika metode pembayaran selain MyPay, langsung berhasil
       setModalMessage(
         `Selamat! Anda berhasil membeli voucher kode ${selectedVoucher.kode} dengan metode pembayaran ${paymentMethod}. Voucher ini berlaku hingga ${selectedVoucher.berlaku} dengan kuota penggunaan sebanyak ${selectedVoucher.kuota} kali.`
       );
       setIsSuccessModalOpen(true);
     }
 
-    setIsPaymentModalOpen(false); // Menutup modal pembayaran setelah konfirmasi
+    setIsPaymentModalOpen(false);
   };
 
   return (
@@ -77,7 +75,6 @@ export default function VoucherList({ vouchers }) {
             <p className="text-center">{voucher.kuota}</p>
             <p className="text-center">{voucher.harga}</p>
 
-            {/* Tombol Beli */}
             <button
               className="bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600"
               onClick={() => handleBuyVoucher(voucher)}
@@ -88,7 +85,6 @@ export default function VoucherList({ vouchers }) {
         ))}
       </div>
 
-      {/* Modal Pemilihan Metode Pembayaran */}
       {isPaymentModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-md w-96">

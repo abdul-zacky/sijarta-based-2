@@ -2,7 +2,7 @@
 
 export default function PromoList({ promos }) {
   if (!promos || promos.length === 0) {
-    return <p>No active promos available</p>; // Menampilkan pesan jika data kosong
+    return <p>No active promos available</p>; 
   }
 
   return (
