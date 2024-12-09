@@ -1,11 +1,10 @@
 "use client";
 
-const promos = [
-  { kode: 'PRM10', akhirBerlaku: '2024-12-31' },
-  { kode: 'PRM50', akhirBerlaku: '2025-01-15' },
-];
+export default function PromoList({ promos }) {
+  if (!promos || promos.length === 0) {
+    return <p>No active promos available</p>; 
+  }
 
-export default function PromoList() {
   return (
     <div className="space-y-4">
       {promos.map((promo, index) => (
