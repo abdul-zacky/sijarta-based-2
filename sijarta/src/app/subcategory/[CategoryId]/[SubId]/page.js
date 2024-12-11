@@ -134,7 +134,7 @@ export default function SubcategoryPage({ params }) {
             <div className="border-t border-gray-300">
             {sessions.map((session, index) => (
                 <div
-                  key={session.id}
+                  key={`${session.id}-${index}`}
                   className={`flex justify-between items-center py-2 px-4 ${
                     index % 2 === 0 ? "bg-gray-100" : "bg-white"
                   } border-b`}
@@ -211,19 +211,16 @@ export default function SubcategoryPage({ params }) {
               </div>
             </div>
           )}
-          <div className="container mx-auto p-4">
-            <div className="border p-4 rounded mb-4">
-              <h2 className="text-lg font-semibold mb-4">Pekerja</h2>
-              <div className="grid grid-cols-4 gap-4 mb-4">
-                {workers.map((worker, index) => (
-                  <div
-                    key={worker.id}
-                    className="border p-2 rounded text-center bg-gray-100 shadow-sm"
-                  >
-                    <p className="font-medium">{worker.nama}</p>
-                  </div>
-                ))}
-              </div>
+          <div className="border p-4 rounded mb-4">
+            <h2 className="text-lg font-semibold mb-4">Pekerja</h2>
+            <div className="grid grid-cols-4 gap-4 mb-4">
+              {workers.map((worker, index) => (
+                <Link href={`/worker/${worker.id}`} key={worker.id}>
+                    <div className="border p-2 rounded text-center bg-gray-100 shadow-sm hover:bg-gray-200 cursor-pointer">
+                      <p className="font-medium">{worker.nama}</p>
+                    </div>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
@@ -236,8 +233,7 @@ export default function SubcategoryPage({ params }) {
             <h2 className="text-lg font-semibold mb-4">Pilihan Sesi Layanan</h2>
             <div className="border-t border-gray-300">
               {sessions.map((session, index) => (
-                <div
-                  key={session.id}
+                <div key={session.id}
                   className={`flex justify-between items-center py-2 px-4 ${
                     index % 2 === 0 ? "bg-gray-100" : "bg-white"
                   } border-b`}

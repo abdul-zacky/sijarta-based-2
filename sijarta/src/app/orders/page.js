@@ -271,7 +271,7 @@ import { useAuth } from "/context/AuthContext";
 import { useRouter } from "next/navigation";
 
 export default function ViewOrdersPage() {
-  const { user } = useAuth(); // Assuming you're using a context to get the current user
+  const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [profile, setProfile] = useState({
     id: null,
@@ -345,19 +345,19 @@ export default function ViewOrdersPage() {
         <tbody>
           {orders.length > 0 ? (
             orders.map((order) => (
-              <tr key={order.id}>
-                <td className="border px-4 py-2">{order.subkategori_jasa}</td>
-                <td className="border px-4 py-2">{order.sesi_layanan}</td>
-                <td className="border px-4 py-2">{order.harga}</td>
-                <td className="border px-4 py-2">{order.nama_pekerja}</td>
-                <td className="border px-4 py-2">{order.status}</td>
-                <td className="border px-4 py-2">
-                  {order.status === "Pesanan Selesai" && (
+              <tr key={`${order.id}-${order.status}`}>
+                <td className="border px-4 py-2 text-center">{order.id}</td>
+                <td className="border px-4 py-2 text-center">{order.sesi}</td>
+                <td className="border px-4 py-2 text-center">{order.total_biaya}</td>
+                <td className="border px-4 py-2 text-center">{order.pekerja_nama}</td>
+                <td className="border px-4 py-2 text-center">{order.status}</td>
+                <td className="border px-4 py-2 text-center">
+                  {order.status == "Order Canceled" || order.status == "Service Completed" && (
                     <button className="bg-green-500 text-white px-4 py-2 rounded">
                       Buat Testimoni
                     </button>
                   )}
-                  {order.status === "Menunggu Pembayaran" && (
+                  {order.status != "Order Canceled" && order.status != "Service Completed" && (
                     <button className="bg-red-500 text-white px-4 py-2 rounded">
                       Batalkan
                     </button>

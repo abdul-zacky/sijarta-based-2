@@ -23,7 +23,7 @@ export async function GET(req, { params }) {
     const [subkategoriJasa] = await sql`SELECT * FROM sijarta.SUBKATEGORI_JASA WHERE id = ${subId}`;
     const sesiLayanan = await sql`SELECT * FROM sijarta.SESI_LAYANAN WHERE subkategori_id = ${subId}`;
     const daftarPekerja = await sql`
-    SELECT U.nama 
+    SELECT U.nama, U.id 
     FROM sijarta.PEKERJA_KATEGORI_JASA K
     JOIN sijarta.PEKERJA P ON P.id = K.pekerja_id
     JOIN sijarta.PENGGUNA U ON P.id = U.id
