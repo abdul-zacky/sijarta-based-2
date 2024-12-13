@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { neon } from '@neondatabase/serverless';
 
-export async function GET(req) {
+export async function GET() {
   // const { searchParams } = new URL(req.url);
   const sql = neon(process.env.DATABASE_URL);
 
