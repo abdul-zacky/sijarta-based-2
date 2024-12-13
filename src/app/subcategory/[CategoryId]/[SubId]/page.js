@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useAuth } from "/context/AuthContext";
 import { useRouter } from "next/navigation";
@@ -215,7 +214,7 @@ export default function SubcategoryPage({ params }) {
             <div className="border p-4 rounded mb-4">
               <h2 className="text-lg font-semibold mb-4">Pekerja</h2>
               <div className="grid grid-cols-4 gap-4 mb-4">
-                {workers.map((worker, index) => (
+                {workers.map((worker) => (
                   <div
                     key={worker.id}
                     className="border p-2 rounded text-center bg-gray-100 shadow-sm"
@@ -252,7 +251,7 @@ export default function SubcategoryPage({ params }) {
             <div className="border p-4 rounded mb-4">
               <h2 className="text-lg font-semibold mb-4">Pekerja</h2>
               <div className="grid grid-cols-4 gap-4 mb-4">
-                {workers.map((worker, index) => (
+                {workers.map((worker) => (
                   <div
                     key={worker.id}
                     className="border p-2 rounded text-center bg-gray-100 shadow-sm"

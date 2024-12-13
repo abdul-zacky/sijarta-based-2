@@ -266,7 +266,6 @@
 "use client";
 import TestimonialModal from "../../components/testimonialmodal";
 
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useAuth } from "/context/AuthContext";
 import { useRouter } from "next/navigation";

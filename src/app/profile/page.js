@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 
 export default function Profile() {
   const { user } = useAuth();
-  const router = useRouter();
   const [profile, setProfile] = useState({
     phone: '',
     address: '',
