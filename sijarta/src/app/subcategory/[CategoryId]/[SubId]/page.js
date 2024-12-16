@@ -9,6 +9,7 @@ export default function SubcategoryPage({ params }) {
   const router = useRouter();
   const { user } = useAuth();
 
+  const [orders, setOrders] = useState([]);
   const [categoryId, setCategoryId] = useState(null);
   const [subId, setSubId] = useState(null);
   const [category, setCategory] = useState({});
@@ -16,6 +17,7 @@ export default function SubcategoryPage({ params }) {
   const [sessions, setSessions] = useState([]);
   const [workers, setWorkers] = useState([]);
   const [testimonies, setTestimonies] = useState([]);
+  const [paymentMethods, setPaymentMethods] = useState([]);
   const [profile, setProfile] = useState({
     role: "Guest",
     name: "",
@@ -28,6 +30,17 @@ export default function SubcategoryPage({ params }) {
     metodePembayaran: "",
     totalPembayaran: 0,
   });
+
+  const fetchOrders = async () => {
+    try {
+      const response = await fetch(`/api/orders?id=${user.id}`);
+      if (!response.ok) throw new Error("Failed to fetch orders");
+      const data = await response.json();
+      setOrders(data.orders || []);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
 
   // Resolve params only once
   useEffect(() => {
@@ -60,6 +73,7 @@ export default function SubcategoryPage({ params }) {
     };
 
     fetchProfile();
+    fetchOrders();
   }, [user]);
 
   // Fetch subcategory details
@@ -76,6 +90,7 @@ export default function SubcategoryPage({ params }) {
         setSessions(data.sesi_layanan || []);
         setWorkers(data.daftar_pekerja || []);
         setTestimonies(data.daftar_testimoni || []);
+        setPaymentMethods(data.daftar_metode || []);
       } catch (error) {
         console.error("Error fetching subcategory data:", error);
       }
@@ -84,8 +99,13 @@ export default function SubcategoryPage({ params }) {
     fetchData();
   }, [categoryId, subId]);
 
-  const handlePesanClick = (price) => {
-    console.log("Pesan button clicked for session with price:", price);
+  const handlePesanClick = (price, sesi) => {
+    console.log("Pesan button clicked for session with price:", price, "and sesi:", sesi);
+    setFormData((prev) => ({
+      ...prev,
+      totalPembayaran: price,
+      sesi: sesi, // Set the sesi here
+    }));
     setSelectedSessionPrice(price); // Set the session price
     setShowModal(true);
   };
@@ -102,14 +122,48 @@ export default function SubcategoryPage({ params }) {
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!formData.tanggalPemesanan || !formData.metodePembayaran) {
       alert("Please fill out all required fields.");
       return;
     }
-    // Proceed with order saving logic here (e.g., saving to database or local storage)
-    router.push("/orders");
-    setShowModal(false);  // Close the modal after saving
+  
+    // Prepare payload with all necessary data
+    const payload = {
+      tgl_pemesanan: formData.tanggalPemesanan,
+      tgl_pekerjaan: null, // Add logic if this is captured elsewhere
+      waktu_pekerjaan: null, // Add logic if needed
+      total_biaya: selectedSessionPrice,
+      id_pelanggan: user.id, // ID of the logged-in customer
+      id_pekerja: null, // Add if the worker ID is selected
+      id_kategori_jasa: subId,
+      sesi: formData.sesi, // Map to session if available
+      id_diskon: formData.diskon || null,
+      id_metode_bayar: formData.metodePembayaran,
+    };
+  
+    try {
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (response.ok) {
+        alert("Order saved successfully!");
+        setShowModal(false); // Close the modal
+        await fetchOrders();
+        router.push("/orders"); // Redirect to orders page
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to save order: ${errorData.error}`);
+      }
+    } catch (error) {
+      console.error("Error saving order:", error);
+      alert("An error occurred while saving the order.");
+    }
   };
 
   return (
@@ -143,7 +197,7 @@ export default function SubcategoryPage({ params }) {
                   <span className="font-medium">Rp {session.harga}</span>
                   <button
                     className="bg-blue-500 text-white px-4 py-2 rounded"
-                    onClick={() => handlePesanClick(session.harga)} // Pass session price
+                    onClick={() => handlePesanClick(session.harga, session.sesi)} // Pass sesi here
                   >
                     Button Pesan
                   </button>
@@ -181,8 +235,8 @@ export default function SubcategoryPage({ params }) {
                   <label className="block text-sm font-medium mb-1">Total Pembayaran:</label>
                   <p>Rp {selectedSessionPrice}</p>
                 </div>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-1">Metode Pembayaran:</label>
+                <div className="border p-4 rounded mb-4">
+                  <h2 className="text-lg font-semibold mb-4">Metode Pembayaran</h2>
                   <select
                     name="metodePembayaran"
                     value={formData.metodePembayaran}
@@ -190,8 +244,11 @@ export default function SubcategoryPage({ params }) {
                     className="w-full border px-3 py-2 rounded"
                   >
                     <option value="">Pilih Metode</option>
-                    <option value="Transfer Bank">Transfer Bank</option>
-                    <option value="E-Wallet">E-Wallet</option>
+                    {paymentMethods.map((method) => (
+                      <option key={method.id} value={method.id}>
+                        {method.nama}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="flex justify-end">
