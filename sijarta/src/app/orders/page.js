@@ -346,7 +346,7 @@ export default function ViewOrdersPage() {
           {orders.length > 0 ? (
             orders.map((order) => (
               <tr key={`${order.id}-${order.status}`}>
-                <td className="border px-4 py-2 text-center">{order.id}</td>
+                <td className="border px-4 py-2 text-center">{order.nama_subkategori ? order.nama_subkategori : order.id}</td>
                 <td className="border px-4 py-2 text-center">{order.sesi}</td>
                 <td className="border px-4 py-2 text-center">{order.total_biaya}</td>
                 <td className="border px-4 py-2 text-center">{order.pekerja_nama}</td>
