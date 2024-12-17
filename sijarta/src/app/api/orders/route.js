@@ -91,9 +91,68 @@ export async function POST(req) {
       RETURNING id;
     `;
 
+    const orderId = result[0].id;
+
+    await sql`
+      INSERT INTO sijarta.tr_pemesanan_status (
+        id_tr_pemesanan,
+        id_status,
+        tgl_waktu
+      )
+      VALUES (
+        ${orderId},
+        (SELECT id FROM sijarta.status_pesanan WHERE status = 'Waiting for Payment'),
+        NOW()
+      )
+    `;
+
     return NextResponse.json({ message: "Order saved successfully", id: result[0].id });
   } catch (error) {
     console.error("Error saving order:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export async function PATCH(req) {
+  try {
+    const sql = neon(process.env.DATABASE_URL);
+
+    const body = await req.json();
+    const { orderId, action } = body; // Expect 'orderId' and an optional 'action'
+
+    if (!orderId) {
+      return new NextResponse(
+        JSON.stringify({ error: "Order ID is required" }),
+        { status: 400 }
+      );
+    }
+
+    if (action === "cancel") {
+      // Handle cancellation
+      await sql`
+        UPDATE sijarta.tr_pemesanan_status
+        SET id_status = (
+          SELECT id FROM sijarta.status_pesanan WHERE status = 'Order Canceled'
+        ),
+        tgl_waktu = NOW()
+        WHERE id_tr_pemesanan = ${orderId};
+      `;
+
+      return new NextResponse(
+        JSON.stringify({ message: "Order canceled successfully" }),
+        { status: 200 }
+      );
+    }
+
+    // Additional PATCH logic (e.g., updates)
+    return new NextResponse(
+      JSON.stringify({ message: "PATCH action not recognized" }),
+      { status: 400 }
+    );
+  } catch (error) {
+    console.error("Error handling PATCH request:", error);
+    return new NextResponse(JSON.stringify({ error: error.message }), {
+      status: 500,
+    });
   }
 }

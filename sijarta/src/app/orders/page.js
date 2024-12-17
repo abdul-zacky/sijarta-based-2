@@ -327,6 +327,30 @@ export default function ViewOrdersPage() {
       fetchOrders();
     }
   }, [profile.id]);
+
+  const handleCancel = async (orderId) => {
+    try {
+      const res = await fetch(`/api/orders`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ orderId, action: "cancel" }),
+      });
+  
+      if (res.ok) {
+        alert("Order successfully canceled");
+        await fetchOrders(); // Refresh the orders list
+      } else {
+        const error = await res.json();
+        alert(`Failed to cancel order: ${error.error}`);
+      }
+    } catch (error) {
+      console.error("Error canceling order:", error);
+      alert("An error occurred while canceling the order.");
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">View Pemesanan Jasa</h1>
@@ -350,7 +374,7 @@ export default function ViewOrdersPage() {
                 </td>
                 <td className="border px-4 py-2 text-center">{order.sesi}</td>
                 <td className="border px-4 py-2 text-center">{order.total_biaya}</td>
-                <td className="border px-4 py-2 text-center">{order.pekerja_nama}</td>
+                <td className="border px-4 py-2 text-center">{order.pekerja_nama || "Not Assigned"}</td>
                 <td className="border px-4 py-2 text-center">{order.status || "Unknown Status"}</td>
                 <td className="border px-4 py-2 text-center">
                   {order.status == "Order Canceled" || order.status == "Service Completed" && (
@@ -359,7 +383,7 @@ export default function ViewOrdersPage() {
                     </button>
                   )}
                   {order.status != "Order Canceled" && order.status != "Service Completed" && (
-                    <button className="bg-red-500 text-white px-4 py-2 rounded">
+                    <button className="bg-red-500 text-white px-4 py-2 rounded" onClick={() => handleCancel(order.id)}>
                       Batalkan
                     </button>
                   )}
