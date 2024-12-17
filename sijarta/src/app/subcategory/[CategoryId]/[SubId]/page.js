@@ -33,7 +33,8 @@ export default function SubcategoryPage({ params }) {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch(`/api/orders?id=${user.id}`);
+      const timestamp = new Date().getTime();
+      const response = await fetch(`/api/orders?id=${user.id}&t=${timestamp}`);
       if (!response.ok) throw new Error("Failed to fetch orders");
       const data = await response.json();
       setOrders(data.orders || []);

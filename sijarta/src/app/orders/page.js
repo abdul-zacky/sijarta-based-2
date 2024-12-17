@@ -279,55 +279,54 @@ export default function ViewOrdersPage() {
     name: "",
   });
   const router = useRouter();
+  "use client";
 
-  // Fetch profile first
+  // Fetch user profile
+  const fetchProfile = async () => {
+    try {
+      const res = await fetch(`/api/profile?id=${user.id}`);
+      if (!res.ok) throw new Error("Failed to fetch profile");
+      const data = await res.json();
+      setProfile({
+        role: data.role || "Pengguna",
+        name: data.name || "Guest",
+        id: data.id || null,
+      });
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
+
+  // Fetch orders
+  const fetchOrders = async () => {
+    try {
+      const timestamp = Date.now();
+      const res = await fetch(`/api/orders?id=${profile.id}&t=${timestamp}`);
+      if (res.ok) {
+        const data = await res.json();
+        setOrders(data.orders || []);
+      } else {
+        console.error("Failed to fetch orders. Status:", res.status);
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
+
+  // Effect to fetch profile and orders
   useEffect(() => {
     if (!user) {
       router.push("/login");
       return;
     }
-
-    const fetchProfile = async () => {
-      try {
-        const res = await fetch(`/api/profile?id=${user.id}`);
-        if (!res.ok) throw new Error("Failed to fetch profile");
-        const data = await res.json();
-        setProfile({
-          role: data.role || "Pengguna",
-          name: data.name || "Guest",
-          id: data.id || null,
-        });
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-      }
-    };
-
     fetchProfile();
   }, [user]);
 
-  // Fetch orders only if profile.id is available
   useEffect(() => {
     if (profile.id) {
-      const fetchOrders = async () => {
-        try {
-          const res = await fetch(`/api/orders?id=${profile.id}`);
-          if (res.ok) {
-            const data = await res.json();
-            if (data.orders) {
-              setOrders(data.orders);
-            } 
-          } else {
-            console.error("Failed to fetch orders. Status:", res.status);
-          }
-        } catch (error) {
-          console.error("Error fetching orders:", error);
-        }
-      };
-  
       fetchOrders();
     }
   }, [profile.id]);
-
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">View Pemesanan Jasa</h1>
@@ -346,11 +345,13 @@ export default function ViewOrdersPage() {
           {orders.length > 0 ? (
             orders.map((order) => (
               <tr key={`${order.id}-${order.status}`}>
-                <td className="border px-4 py-2 text-center">{order.nama_subkategori ? order.nama_subkategori : order.id}</td>
+                <td className="border px-4 py-2 text-center">
+                  {order.nama_subkategori || "Unknown Subcategory"}
+                </td>
                 <td className="border px-4 py-2 text-center">{order.sesi}</td>
                 <td className="border px-4 py-2 text-center">{order.total_biaya}</td>
                 <td className="border px-4 py-2 text-center">{order.pekerja_nama}</td>
-                <td className="border px-4 py-2 text-center">{order.status}</td>
+                <td className="border px-4 py-2 text-center">{order.status || "Unknown Status"}</td>
                 <td className="border px-4 py-2 text-center">
                   {order.status == "Order Canceled" || order.status == "Service Completed" && (
                     <button className="bg-green-500 text-white px-4 py-2 rounded">
