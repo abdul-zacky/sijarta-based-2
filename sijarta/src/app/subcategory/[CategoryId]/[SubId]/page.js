@@ -237,19 +237,23 @@ export default function SubcategoryPage({ params }) {
                 </div>
                 <div className="border p-4 rounded mb-4">
                   <h2 className="text-lg font-semibold mb-4">Metode Pembayaran</h2>
-                  <select
-                    name="metodePembayaran"
-                    value={formData.metodePembayaran}
-                    onChange={handleFormChange}
-                    className="w-full border px-3 py-2 rounded"
-                  >
-                    <option value="">Pilih Metode</option>
-                    {paymentMethods.map((method) => (
-                      <option key={method.id} value={method.id}>
-                        {method.nama}
-                      </option>
-                    ))}
-                  </select>
+                  {paymentMethods.length === 0 ? (
+                    <p className="text-red-500">No payment methods available.</p>
+                  ) : (
+                    <select
+                      name="metodePembayaran"
+                      value={formData.metodePembayaran}
+                      onChange={handleFormChange}
+                      className="w-full border px-3 py-2 rounded"
+                    >
+                      <option value="">Pilih Metode</option>
+                      {paymentMethods.map((method) => (
+                        <option key={method.id} value={method.id}>
+                          {method.nama}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
                 <div className="flex justify-end">
                   <button
