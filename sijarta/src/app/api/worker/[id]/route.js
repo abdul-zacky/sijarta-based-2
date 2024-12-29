@@ -24,7 +24,7 @@ export async function GET(req, { params }) {
       return new Response(JSON.stringify({ error: "Worker not found" }), { status: 404 });
     }
 
-    return new Response(JSON.stringify({ worker: workers }), { status: 200 });
+    return new Response(JSON.stringify({ worker: workers[0] }), { status: 200 });
   } catch (error) {
     console.error("Error fetching worker:", error);
     return new Response(JSON.stringify({ error: error.message }), { status: 500 });

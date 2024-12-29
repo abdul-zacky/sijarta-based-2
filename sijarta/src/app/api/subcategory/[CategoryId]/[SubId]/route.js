@@ -22,6 +22,7 @@ export async function GET(req, { params }) {
     const [kategoriJasa] = await sql`SELECT * FROM sijarta.KATEGORI_JASA WHERE id = ${categoryId}`;
     const [subkategoriJasa] = await sql`SELECT * FROM sijarta.SUBKATEGORI_JASA WHERE id = ${subId}`;
     const sesiLayanan = await sql`SELECT * FROM sijarta.SESI_LAYANAN WHERE subkategori_id = ${subId}`;
+    const daftarMetode = await sql`SELECT * FROM sijarta.METODE_BAYAR`;
     const daftarPekerja = await sql`
     SELECT U.nama, U.id 
     FROM sijarta.PEKERJA_KATEGORI_JASA K
@@ -48,7 +49,8 @@ export async function GET(req, { params }) {
       subkategori_jasa: subkategoriJasa,
       sesi_layanan: sesiLayanan,
       daftar_pekerja: daftarPekerja,
-      daftar_testimoni: daftarTestimoni
+      daftar_testimoni: daftarTestimoni,
+      daftar_metode: daftarMetode,
     });
   } catch (error) {
     console.error("Error accessing the database2:", error.message);

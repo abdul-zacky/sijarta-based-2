@@ -1,89 +1,6 @@
-// "use client";
-
-// import Link from "next/link";
-// import { useState, useEffect } from "react";
-// import { useAuth } from "/context/AuthContext";
-// import { useRouter } from "next/navigation";
-
-// export default function WorkerProfile({ params }) {
-//   const router = useRouter();
-//   const [worker, setWorker] = useState({});
-//   const { user } = useAuth();
-//   const [profileId, setId] = useState(null);
-//   const [profile, setProfile] = useState({
-//     role: "Guest",
-//     name: "",
-//   });
-
-//   useEffect(() => {
-//     (async () => {
-//       const resolvedParams = await params;
-//       setId(resolvedParams.id);
-//       console.log("Found :", profileId)
-//     })();
-//   }, [params]);
-
-//   useEffect(() => {
-//     if (!user) {
-//       router.push("/login");
-//       return;
-//     }
-
-//     const fetchProfile = async () => {
-//       try {
-//         const res = await fetch(`/api/profile?id=${user.id}`);
-//         if (!res.ok) throw new Error("Failed to fetch profile");
-//         const data = await res.json();
-//         setProfile({
-//           role: data.role || "Pengguna",
-//           name: data.name || "Guest",
-//         });
-//       } catch (error) {
-//         console.error("Error fetching profile:", error);
-//       }
-//     };
-
-//     fetchProfile();
-//   }, [user]);
-
-//   useEffect(() => {
-//     const fetchWorkerData = async () => {
-//       try {
-//         const res = await fetch(`/api/worker/${profileId}`);
-//         if (res.ok) {
-//           const data = await res.json();
-//           setWorker(data.worker);
-//           console.log("Worker :", worker.id)
-//         } else {
-//           console.error("Failed to fetch worker data");
-//         }
-//       } catch (error) {
-//         console.error("Error fetching worker:", error);
-//       }
-//     };
-
-//     fetchWorkerData();
-//   }, [profileId]);
-
-//   if (!worker) {
-//     return <div>Loading...</div>;
-//   }
-
-//   return (
-//     <div className="container mx-auto p-4">
-//       <h1 className="text-2xl font-bold mb-4">{worker.nama}</h1>
-//       <div className="border p-4 rounded mb-4">
-//         <h2 className="text-lg font-semibold mb-4">Profile</h2>
-//         <p><strong>Nama:</strong> {worker.nama}</p>
-//         <p><strong>Deskripsi:</strong> {worker.deskripsi}</p>
-//         <p><strong>Rating:</strong> {worker.rating}</p>
-//       </div>
-//     </div>
-//   );
-// }
-
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -122,12 +39,36 @@ export default function WorkerProfile({params}) {
   if (!worker) return <div>Loading...</div>;
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold">{worker.nama}</h1>
-      <p><strong>Rating:</strong> {worker.rating}</p>
-      <p><strong>Orders Completed:</strong> {worker.jml_pesanan_selesai}</p>
-      <p><strong>Address:</strong> {worker.alamat}</p>
-      <img src={worker.link_foto} alt={worker.nama} className="w-32 h-32 rounded-full" />
+<div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-lg rounded-lg p-6 max-w-sm w-full">
+        <div className="flex flex-col items-center">
+          {worker.link_foto && (
+            <img
+              src={worker.link_foto}
+              alt={worker.nama}
+              className="w-32 h-32 rounded-full mb-4"
+            />
+          )}
+          <h1 className="text-2xl font-bold mb-2 text-gray-800">{worker.nama}</h1>
+          <p className="text-lg text-gray-600 mb-1">
+            <strong>Rating:</strong> {worker.rating}
+          </p>
+          <p className="text-lg text-gray-600 mb-1">
+            <strong>Orders Completed:</strong> {worker.jml_pesanan_selesai}
+          </p>
+          <p className="text-lg text-gray-600 mb-6">
+            <strong>Address:</strong> {worker.alamat}
+          </p>
+          <Link href={`/services/`} className="block">
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Return to Home
+          </button>
+          </Link>
+          
+        </div>
+      </div>
     </div>
   );
 }
