@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { neon } from '@neondatabase/serverless';
 
+DATABASE_URL='postgresql://sijarta_owner:Wy6XorAz7HNe@ep-calm-water-a1mytz7y.ap-southeast-1.aws.neon.tech/sijarta?sslmode=require'
+
 export async function POST(request) {
   try {
     const { phone, password } = await request.json();
