@@ -266,13 +266,12 @@
 "use client";
 import TestimonialModal from "../../components/testimonialmodal";
 
-import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useAuth } from "/context/AuthContext";
 import { useRouter } from "next/navigation";
 
 export default function ViewOrdersPage() {
-  const { user } = useAuth();
+  const { user } = useAuth(); // Assuming you're using a context to get the current user
   const [orders, setOrders] = useState([]);
   const [profile, setProfile] = useState({
     id: null,
@@ -282,78 +281,55 @@ export default function ViewOrdersPage() {
   const [isTestimonialModalOpen, setIsTestimonialModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const router = useRouter();
-  "use client";
 
-  // Fetch user profile
-  const fetchProfile = async () => {
-    try {
-      const res = await fetch(`/api/profile?id=${user.id}`);
-      if (!res.ok) throw new Error("Failed to fetch profile");
-      const data = await res.json();
-      setProfile({
-        role: data.role || "Pengguna",
-        name: data.name || "Guest",
-        id: data.id || null,
-      });
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    }
-  };
-
-  // Fetch orders
-  const fetchOrders = async () => {
-    try {
-      const timestamp = Date.now();
-      const res = await fetch(`/api/orders?id=${profile.id}&t=${timestamp}`);
-      if (res.ok) {
-        const data = await res.json();
-        setOrders(data.orders || []);
-      } else {
-        console.error("Failed to fetch orders. Status:", res.status);
-      }
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-    }
-  };
-
-  // Effect to fetch profile and orders
+  // Fetch profile first
   useEffect(() => {
     if (!user) {
       router.push("/login");
       return;
     }
+
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(`/api/profile?id=${user.id}`);
+        if (!res.ok) throw new Error("Failed to fetch profile");
+        const data = await res.json();
+        setProfile({
+          role: data.role || "Pengguna",
+          name: data.name || "Guest",
+          id: data.id || null,
+        });
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
     fetchProfile();
   }, [user]);
 
+  // Fetch orders only if profile.id is available
   useEffect(() => {
     if (profile.id) {
+      const fetchOrders = async () => {
+        try {
+          const res = await fetch(`/api/orders?id=${profile.id}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.orders) {
+              setOrders(data.orders);
+            } 
+          } else {
+            console.error("Failed to fetch orders. Status:", res.status);
+          }
+        } catch (error) {
+          console.error("Error fetching orders:", error);
+        }
+      };
+  
       fetchOrders();
     }
   }, [profile.id]);
 
-  const handleCancel = async (orderId) => {
-    try {
-      const res = await fetch(`/api/orders`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ orderId, action: "cancel" }),
-      });
-  
-      if (res.ok) {
-        alert("Order successfully canceled");
-        await fetchOrders(); // Refresh the orders list
-      } else {
-        const error = await res.json();
-        alert(`Failed to cancel order: ${error.error}`);
-      }
-    } catch (error) {
-      console.error("Error canceling order:", error);
-      alert("An error occurred while canceling the order.");
-    }
-  };
-  
   const handleAddTestimonial = (testimonial) => {
     console.log("Testimoni ditambahkan:", testimonial);
     // Logic untuk menyimpan testimoni, misalnya ke API atau local storage
@@ -363,7 +339,6 @@ export default function ViewOrdersPage() {
   const handleTestimoni = (order) => {
     setSelectedOrder(order);
     setIsTestimonialModalOpen(true);
-
   };
 
   return (
@@ -383,22 +358,23 @@ export default function ViewOrdersPage() {
         <tbody>
           {orders.length > 0 ? (
             orders.map((order) => (
-              <tr key={`${order.id}-${order.status}`}>
-                <td className="border px-4 py-2 text-center">
-                  {order.nama_subkategori || "Unknown Subcategory"}
-                </td>
-                <td className="border px-4 py-2 text-center">{order.sesi}</td>
-                <td className="border px-4 py-2 text-center">{order.total_biaya}</td>
-                <td className="border px-4 py-2 text-center">{order.pekerja_nama || "Not Assigned"}</td>
-                <td className="border px-4 py-2 text-center">{order.status || "Unknown Status"}</td>
-                <td className="border px-4 py-2 text-center">
-                  {order.status == "Order Canceled" || order.status == "Service Completed" && (
-                    <button className="bg-green-500 text-white px-4 py-2 rounded">
+              <tr key={order.id}>
+                <td className="border px-4 py-2">{order.subkategori_jasa}</td>
+                <td className="border px-4 py-2">{order.sesi_layanan}</td>
+                <td className="border px-4 py-2">{order.harga}</td>
+                <td className="border px-4 py-2">{order.nama_pekerja}</td>
+                <td className="border px-4 py-2">{order.status}</td>
+                <td className="border px-4 py-2">
+                  {order.status === "Pesanan Selesai" && (
+                    <button
+                      onClick={() => handleTestimoni(order)}
+                      className="bg-green-500 text-white px-4 py-2 rounded"
+                    >
                       Buat Testimoni
                     </button>
                   )}
-                  {order.status != "Order Canceled" && order.status != "Service Completed" && (
-                    <button className="bg-red-500 text-white px-4 py-2 rounded" onClick={() => handleCancel(order.id)}>
+                  {order.status === "Menunggu Pembayaran" && (
+                    <button className="bg-red-500 text-white px-4 py-2 rounded">
                       Batalkan
                     </button>
                   )}
